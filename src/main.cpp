@@ -9,7 +9,7 @@
 #define PWM_PIN 3 // To motor
 #define CURRENT_SENSING A0 
 
-enum ArmState arm_state = ARM_IDLE; // Set first state
+enum ArmState arm_state = ARM_INIT; // Set first state
 
 // Subroutine variables
 uint32_t button_subroutine_pressure = 0;
@@ -78,7 +78,6 @@ void setup() {
   button_subroutine_pressure = millis();
   motor_stall_timer = millis();
   regulator_subroutine_timer = millis();
-
 }
 
 void loop() {
@@ -99,7 +98,7 @@ if (millis() - motor_stall_timer > 10)
       Serial.println("Motor Stall");
       motor_stall_timer = millis();
       target = pos;
-      arm_state = ARM_WAIT_LOW_POS;
+      arm_state = ARM_IDLE;
     }
     
   }
@@ -119,7 +118,7 @@ if(millis() - regulator_subroutine_timer > 10){
 
   switch(arm_state){
     
-    case ARM_IDLE: // Wait for 1 second 
+    case ARM_INIT: // Wait for 1 second 
       if (millis() - arm_timer > 1000){
           arm_timer = millis();
           arm_state = ARM_SET_TOP_POS;
@@ -134,11 +133,11 @@ if(millis() - regulator_subroutine_timer > 10){
         pos = 0;
         interrupts();
         arm_timer = millis();
-        arm_state = ARM_WAIT_LOW_POS;
+        arm_state = ARM_IDLE;
       }    
       break;
 
-    case ARM_WAIT_LOW_POS:
+    case ARM_IDLE:
       pidController(lowPos, pos, PWM_PIN, DIR_PIN);
       if (digitalRead(PRESSURE_SW)){
         arm_timer = millis();
@@ -150,7 +149,7 @@ if(millis() - regulator_subroutine_timer > 10){
       pidController(highPos, pos, PWM_PIN, DIR_PIN);
       if (millis() - arm_timer > 3000) {
         arm_timer = millis();
-        arm_state = ARM_WAIT_LOW_POS;
+        arm_state = ARM_IDLE;
       }
       break;
     
@@ -158,11 +157,9 @@ if(millis() - regulator_subroutine_timer > 10){
       pidController(target, pos, PWM_PIN, DIR_PIN);
       if (millis() - arm_timer > 5000){
           arm_timer = millis();
-          arm_state = ARM_WAIT_LOW_POS;
+          arm_state = ARM_IDLE;
       }
       break;
-
   }
-
 }
 }
