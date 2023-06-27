@@ -14,7 +14,6 @@ enum ArmState arm_state = ARM_INIT; // Set first state
 // Subroutine variables
 uint32_t button_subroutine_pressure = 0;
 uint32_t motor_stall_timer = 0;
-uint32_t heartbeat_subroutine_timer = 0;
 uint32_t regulator_subroutine_timer = 0;
 uint32_t arm_timer = 0;
 
@@ -74,7 +73,6 @@ void setup() {
 
   // Set ininital relative time
   arm_timer = millis();                    
-  heartbeat_subroutine_timer = millis();
   button_subroutine_pressure = millis();
   motor_stall_timer = millis();
   regulator_subroutine_timer = millis();
@@ -150,14 +148,6 @@ if(millis() - regulator_subroutine_timer > 10){
       if (millis() - arm_timer > 3000) {
         arm_timer = millis();
         arm_state = ARM_IDLE;
-      }
-      break;
-    
-    case ARM_STOP:
-      pidController(target, pos, PWM_PIN, DIR_PIN);
-      if (millis() - arm_timer > 5000){
-          arm_timer = millis();
-          arm_state = ARM_IDLE;
       }
       break;
   }
