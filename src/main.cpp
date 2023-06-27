@@ -4,12 +4,9 @@
 #define ENCA 2 // Encoder A
 #define ENCB 4 // Encoder B
 #define TOP_SW 6 // Register top pos - Connect to pull down
-//#define MOTHERBOARD_SIGN 7 // Not connected - find out how it can work with main board (when pain is stimulated)
 #define PRESSURE_SW 10 // Pain stimuli - signal from mother board
 #define DIR_PIN 12 // To motor
 #define PWM_PIN 3 // To motor
-//#define BRAKE_PIN 9 // Unnecessary
-//#define LED 13 // Unnecessary
 #define CURRENT_SENSING A0 
 
 enum ArmState arm_state = ARM_IDLE; // Set first state
@@ -64,14 +61,10 @@ void setup() {
   // Motor
   pinMode(DIR_PIN,OUTPUT);
   pinMode(PWM_PIN,OUTPUT);
-  //pinMode(BRAKE_PIN,OUTPUT); - REMOVE
 
   // Switches
   pinMode(TOP_SW,INPUT);
   pinMode(PRESSURE_SW,INPUT);
- 
-  //LED
-  //pinMode(LED,OUTPUT);- REMOVE
 
   // Read encoder interrupt
   attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
@@ -112,13 +105,6 @@ if (millis() - motor_stall_timer > 10)
   }
 }
 
-// Subroutine for LED blinking, just for checking the Arduino is alive - REMOVE
-// if(millis() - heartbeat_subroutine_timer > 1000){
-//  heartbeat_subroutine_timer = millis();
-//  digitalWrite(LED, !digitalRead(LED));             
-//}
-
-
 // Subroutine for force sensor
 if(millis() - button_subroutine_pressure > 10){
   button_subroutine_pressure = millis();
@@ -127,8 +113,7 @@ if(millis() - button_subroutine_pressure > 10){
   }
 }
 
-
-// Regulator/FSM
+// Regulator -- FSM
 if(millis() - regulator_subroutine_timer > 10){
   regulator_subroutine_timer = millis();
 
