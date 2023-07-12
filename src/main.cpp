@@ -1,3 +1,5 @@
+#include <stdint.h>
+#include <Arduino.h>
 #include "ArmState.h"
 #include "PIDdiy.h"
 
