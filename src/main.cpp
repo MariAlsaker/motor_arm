@@ -127,7 +127,7 @@ if(millis() - regulator_subroutine_timer > 10){
 
     case ARM_SET_TOP_POS: // Calibrating position
       digitalWrite(DIR_PIN,LOW);
-      analogWrite(PWM_PIN,180);
+      analogWrite(PWM_PIN,220);
       if (digitalRead(TOP_SW)){
         noInterrupts();
         pos = 0;
